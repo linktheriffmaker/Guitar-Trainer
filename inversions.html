@@ -59,7 +59,7 @@
   </div>
   <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
     <button id="zoom-out" style="font-size:14px;width:30px;height:30px;line-height:1;cursor:pointer;border-radius:7px;border:1px solid #404060;background:#252540;color:#e8e8f0;font-family:inherit;font-weight:700">－</button>
-    <span id="zoom-label" style="font-size:11px;color:#7070a0;min-width:38px;text-align:center">130%</span>
+    <span id="zoom-label" style="font-size:11px;color:#7070a0;min-width:38px;text-align:center">100%</span>
     <button id="zoom-in" style="font-size:14px;width:30px;height:30px;line-height:1;cursor:pointer;border-radius:7px;border:1px solid #404060;background:#252540;color:#e8e8f0;font-family:inherit;font-weight:700">＋</button>
     <span style="font-size:11px;color:#50506a">Zoom the fretboard for a sharper, easier-to-tap view</span>
   </div>
@@ -433,31 +433,33 @@ function playNote(midi,dur=0.65,delay=0){
 
 const canvas=document.getElementById("fb");
 const ctx=canvas.getContext("2d");
-function computeInitialZoom(){
+function computeBaseScale(){
   const outer=document.getElementById("fb-outer");
   const w=(outer&&outer.clientWidth)||window.innerWidth;
   if(w>700) return 1.1;
   const targetFrets=4.2;
   return Math.max(1,Math.min(2.5,w/(targetFrets*CW)));
 }
-let zoom=computeInitialZoom();
+const baseScale=computeBaseScale();
+let userZoom=1;
 function resizeCanvas(){
   const dpr=window.devicePixelRatio||1;
-  canvas.style.width=(CVW*zoom)+"px";
-  canvas.style.height=(CVH*zoom)+"px";
-  canvas.width=Math.round(CVW*zoom*dpr);
-  canvas.height=Math.round(CVH*zoom*dpr);
-  ctx.setTransform(zoom*dpr,0,0,zoom*dpr,0,0);
+  const scale=baseScale*userZoom;
+  canvas.style.width=(CVW*scale)+"px";
+  canvas.style.height=(CVH*scale)+"px";
+  canvas.width=Math.round(CVW*scale*dpr);
+  canvas.height=Math.round(CVH*scale*dpr);
+  ctx.setTransform(scale*dpr,0,0,scale*dpr,0,0);
 }
 resizeCanvas();
-document.getElementById("zoom-label").textContent=Math.round(zoom*100)+"%";
+document.getElementById("zoom-label").textContent=Math.round(userZoom*100)+"%";
 function setZoom(z){
-  zoom=Math.max(0.75,Math.min(2.5,z));
+  userZoom=Math.max(0.6,Math.min(2,z));
   resizeCanvas();draw();
-  document.getElementById("zoom-label").textContent=Math.round(zoom*100)+"%";
+  document.getElementById("zoom-label").textContent=Math.round(userZoom*100)+"%";
 }
-document.getElementById("zoom-in").onclick=()=>setZoom(zoom+0.25);
-document.getElementById("zoom-out").onclick=()=>setZoom(zoom-0.25);
+document.getElementById("zoom-in").onclick=()=>setZoom(userZoom+0.25);
+document.getElementById("zoom-out").onclick=()=>setZoom(userZoom-0.25);
 
 function rr(c,x,y,w,h,r){
   c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);
