@@ -203,17 +203,7 @@ var MODES = {
       {artist:'Big Thief', title:'Mary', detail:'Standard tuning, key of D major \u00b7 D \u00b7 G \u00b7 A', tag:'widely documented'},
       {artist:'Slowdive', title:'When the Sun Hits', detail:'Standard tuning, key of F# minor \u00b7 built from F#m \u00b7 D \u00b7 A \u00b7 G (order varies by version)', tag:'widely documented'}
     ],
-    songNote: "I couldn't find reliably verified guitar transcriptions for Dijon, Yves Tumor, or Masayoshi Takanaka specifically. Their harmonic vocabulary is reflected in the chord sets above — I didn't want to present unverified song-specific claims as fact.",
-    listening: [
-      {artist:'mk.gee', title:'Rylee & I'},
-      {artist:'mk.gee', title:'DNM'},
-      {artist:'Dijon', title:'Many Times'},
-      {artist:'Dijon', title:'Rodeo Clown'},
-      {artist:'Yves Tumor', title:'Kerosene!'},
-      {artist:'Yves Tumor', title:'Gospel for a New Century'},
-      {artist:'Big Thief', title:'Vampire Empire'},
-      {artist:'Slowdive', title:'Alison'}
-    ]
+    songNote: "I couldn't find reliably verified guitar transcriptions for Dijon, Yves Tumor, or Masayoshi Takanaka specifically. Their harmonic vocabulary is reflected in the chord sets above — I didn't want to present unverified song-specific claims as fact."
   },
   citypop: {
     label: 'City Pop',
@@ -222,15 +212,7 @@ var MODES = {
     songs: [
       {artist:'Mariya Takeuchi', title:'Plastic Love', detail:'Standard tuning, key of D minor \u00b7 intro: Bbmaj7 \u00b7 Gm9 \u00b7 Eb7 \u00b7 Bbmaj7 \u00b7 Am7 \u00b7 D \u00b7 Gm9 \u00b7 C7b9 \u00b7 Am7 \u00b7 Dm7', tag:'widely documented'}
     ],
-    songNote: "I couldn't find reliably verified guitar transcriptions for Masayoshi Takanaka's instrumental work specifically — his parts are intricate and mostly undocumented as chord charts. The vocabulary above reflects the style's harmonic language.",
-    listening: [
-      {artist:'Tatsuro Yamashita', title:'Ride on Time'},
-      {artist:'Tatsuro Yamashita', title:'Sparkle'},
-      {artist:'Anri', title:'Remember Summer Days'},
-      {artist:'Taeko Ohnuki', title:'4:00 AM'},
-      {artist:'Toshiki Kadomatsu', title:'Down Town'},
-      {artist:'Masayoshi Takanaka', title:'Blue Lagoon'}
-    ]
+    songNote: "I couldn't find reliably verified guitar transcriptions for Masayoshi Takanaka's instrumental work specifically — his parts are intricate and mostly undocumented as chord charts. The vocabulary above reflects the style's harmonic language."
   },
   triphop: {
     label: 'Trip Hop',
@@ -240,16 +222,7 @@ var MODES = {
       {artist:'Massive Attack', title:'Teardrop', detail:'Standard tuning, key of A major \u00b7 Aadd9 \u00b7 G \u00b7 D \u00b7 Aadd9 \u00b7 F \u00b7 G \u00b7 Aadd9 (the harpsichord ostinato, emulated on guitar)', tag:'widely documented'},
       {artist:'Portishead', title:'Glory Box', detail:'Capo 6, using Am \u00b7 Am7 \u00b7 F \u00b7 E7 shapes (sounds as Ebm \u00b7 Ebm7 \u00b7 Db \u00b7 B)', tag:'widely documented'}
     ],
-    songNote: "Most trip hop was built from samples and turntables, not guitar parts — I couldn't find reliably verified chord transcriptions beyond these two. The vocabulary above reflects the style's harmonic language rather than claiming more song-specific charts.",
-    listening: [
-      {artist:'Massive Attack', title:'Angel'},
-      {artist:'Massive Attack', title:'Unfinished Sympathy'},
-      {artist:'Portishead', title:'Roads'},
-      {artist:'Portishead', title:'Sour Times'},
-      {artist:'Tricky', title:'Aftermath'},
-      {artist:'Morcheeba', title:'Trigger Hippie'},
-      {artist:'Thievery Corporation', title:'Lebanese Blonde'}
-    ]
+    songNote: "Most trip hop was built from samples and turntables, not guitar parts — I couldn't find reliably verified chord transcriptions beyond these two. The vocabulary above reflects the style's harmonic language rather than claiming more song-specific charts."
   },
   bigbeat: {
     label: 'Big Beat',
@@ -258,16 +231,7 @@ var MODES = {
     songs: [
       {artist:'Boom Boom Satellites', title:'Lay Your Hands on Me', detail:'Key of F major \u00b7 verse: F \u00b7 C \u00b7 Gm \u00b7 Bb \u00b7 bridge: Dm \u00b7 C \u00b7 Gm \u00b7 Bb', tag:'widely documented'}
     ],
-    songNote: "Boom Boom Satellites blended big beat with alternative-rock guitar, but most of their catalog isn't documented as chord charts beyond this single. The vocabulary above reflects the breakbeat-rock crossover sound more broadly.",
-    listening: [
-      {artist:'Boom Boom Satellites', title:'Kick It Out'},
-      {artist:'Boom Boom Satellites', title:'On the Painted Desert'},
-      {artist:'Boom Boom Satellites', title:'Push Eject'},
-      {artist:'The Prodigy', title:'Firestarter'},
-      {artist:'The Chemical Brothers', title:'Block Rockin\u2019 Beats'},
-      {artist:'Fatboy Slim', title:'Right Here, Right Now'},
-      {artist:'The Crystal Method', title:'Busy Child'}
-    ]
+    songNote: "Boom Boom Satellites blended big beat with alternative-rock guitar, but most of their catalog isn't documented as chord charts beyond this single. The vocabulary above reflects the breakbeat-rock crossover sound more broadly."
   }
 };
 
@@ -600,7 +564,7 @@ function render(){
 
     var canvas = document.createElement('canvas');
     canvas.className = 'diagram';
-    canvas.style.width = '100%'; canvas.style.height = '190px';
+    canvas.style.width = '100%'; canvas.style.height = '150px';
     card.appendChild(canvas);
     card.appendChild(el('div','card-note', chd.note));
     card.onclick = function(frets){ return function(){ playChord(frets, freqs); }; }(chd.frets);
@@ -637,7 +601,7 @@ function render(){
     card.appendChild(top);
     var canvas = document.createElement('canvas');
     canvas.className = 'diagram';
-    canvas.style.width = '100%'; canvas.style.height = '190px';
+    canvas.style.width = '100%'; canvas.style.height = '150px';
     card.appendChild(canvas);
     card.appendChild(el('div','card-note', chd.note));
     card.onclick = function(frets){ return function(){ playChord(frets, invFreqs); }; }(chd.frets);
@@ -663,7 +627,7 @@ function render(){
       card.appendChild(top);
       var canvas = document.createElement('canvas');
       canvas.className = 'diagram';
-      canvas.style.width = '100%'; canvas.style.height = '190px';
+      canvas.style.width = '100%'; canvas.style.height = '150px';
       card.appendChild(canvas);
       card.appendChild(el('div','card-note', chd.note));
       card.onclick = function(frets){ return function(){ playChord(frets, CITYPOP.freq); }; }(chd.frets);
@@ -689,21 +653,6 @@ function render(){
   });
   songSec.appendChild(el('p','song-caveat', m.songNote));
   app.appendChild(songSec);
-
-  if(m.listening && m.listening.length){
-    var listenSec = el('div','section listen-section');
-    listenSec.appendChild(el('h2','section-title','Further Listening'));
-    listenSec.appendChild(el('p','section-note','More tracks in this style to train your ear on — pull these up on whatever you stream with.'));
-    var listenGrid = el('div','listen-grid');
-    m.listening.forEach(function(s){
-      var row = el('div','listen-item');
-      row.appendChild(el('span','listen-artist', s.artist));
-      row.appendChild(el('span','listen-title', s.title));
-      listenGrid.appendChild(row);
-    });
-    listenSec.appendChild(listenGrid);
-    app.appendChild(listenSec);
-  }
 
   app.appendChild(el('div','footer','Tap any chord to hear it \u00b7 Rotate for a wider grid'));
 }
@@ -844,12 +793,6 @@ body.mode-bigbeat{ --bg: var(--bigbeat-bg); --surface: var(--bigbeat-surface); -
 .song-title{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; margin: 2px 0 6px 0; }
 .song-detail{ font-family:'Space Mono', monospace; font-size:12px; line-height:1.6; color: var(--text); }
 .song-caveat{ font-size:12.5px; line-height:1.5; color: var(--muted); margin: 14px 2px 0 2px; font-style: italic; }
-
-.listen-grid{ display:grid; grid-template-columns: 1fr; gap:0; border-top:1px solid var(--diagram-line); }
-.listen-item{ display:flex; align-items:baseline; gap:10px; padding:10px 2px; border-bottom:1px solid var(--diagram-line); }
-.listen-artist{ font-family:'Space Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.04em; color: var(--muted); flex-shrink:0; min-width: 38%; }
-.listen-title{ font-family:'Fraunces', serif; font-size:15px; color: var(--text); }
-@media (min-width: 560px){ .listen-grid{ grid-template-columns: 1fr 1fr; column-gap: 24px; } }
 
 .footer{ text-align:center; padding: 20px; font-family:'Space Mono', monospace; font-size:11px; color: var(--muted); }
 
