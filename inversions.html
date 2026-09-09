@@ -56,6 +56,12 @@
       <div id="tooltip" style="display:none;position:absolute;border-radius:8px;padding:5px 10px;font-size:12px;pointer-events:none;white-space:nowrap;z-index:20;font-weight:500;background:#303055;border:1px solid #505070;color:#e8e8f8"></div>
     </div>
   </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+    <button id="zoom-out" style="font-size:14px;width:30px;height:30px;line-height:1;cursor:pointer;border-radius:7px;border:1px solid #404060;background:#252540;color:#e8e8f0;font-family:inherit;font-weight:700">－</button>
+    <span id="zoom-label" style="font-size:11px;color:#7070a0;min-width:38px;text-align:center">100%</span>
+    <button id="zoom-in" style="font-size:14px;width:30px;height:30px;line-height:1;cursor:pointer;border-radius:7px;border:1px solid #404060;background:#252540;color:#e8e8f0;font-family:inherit;font-weight:700">＋</button>
+    <span style="font-size:11px;color:#50506a">Zoom the fretboard for a sharper, easier-to-tap view</span>
+  </div>
   <div id="info" style="font-size:11px;color:#50506a;margin-top:8px;min-height:14px"></div>
 
   <div id="quiz-panel" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:#252540;border:1px solid #404060">
@@ -426,7 +432,23 @@ function playNote(midi,dur=0.65,delay=0){
 
 const canvas=document.getElementById("fb");
 const ctx=canvas.getContext("2d");
-canvas.width=CVW;canvas.height=CVH;
+let zoom=1;
+function resizeCanvas(){
+  const dpr=window.devicePixelRatio||1;
+  canvas.style.width=(CVW*zoom)+"px";
+  canvas.style.height=(CVH*zoom)+"px";
+  canvas.width=Math.round(CVW*zoom*dpr);
+  canvas.height=Math.round(CVH*zoom*dpr);
+  ctx.setTransform(zoom*dpr,0,0,zoom*dpr,0,0);
+}
+resizeCanvas();
+function setZoom(z){
+  zoom=Math.max(0.75,Math.min(2,z));
+  resizeCanvas();draw();
+  document.getElementById("zoom-label").textContent=Math.round(zoom*100)+"%";
+}
+document.getElementById("zoom-in").onclick=()=>setZoom(zoom+0.25);
+document.getElementById("zoom-out").onclick=()=>setZoom(zoom-0.25);
 
 function rr(c,x,y,w,h,r){
   c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);
@@ -519,13 +541,13 @@ function hit(mx,my){
 }
 canvas.addEventListener("click",e=>{
   const r=canvas.getBoundingClientRect();
-  const n=hit((e.clientX-r.left)*canvas.width/r.width,(e.clientY-r.top)*canvas.height/r.height);
+  const n=hit((e.clientX-r.left)*CVW/r.width,(e.clientY-r.top)*CVH/r.height);
   if(!n)return;playNote(n.midi);if(quizMode)startQuiz(n);else showTip(e,n);
 });
 canvas.addEventListener("mousemove",e=>{
   if(quizMode){hideTip();return;}
   const r=canvas.getBoundingClientRect();
-  const n=hit((e.clientX-r.left)*canvas.width/r.width,(e.clientY-r.top)*canvas.height/r.height);
+  const n=hit((e.clientX-r.left)*CVW/r.width,(e.clientY-r.top)*CVH/r.height);
   n?(canvas.style.cursor="pointer",showTip(e,n)):(canvas.style.cursor="default",hideTip());
 });
 canvas.addEventListener("mouseleave",hideTip);
