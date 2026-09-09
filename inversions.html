@@ -105,7 +105,7 @@ const CHNAMES=Object.keys(CHORDS);
 const OPEN_MIDI=[40,45,50,55,59,64];
 const SNAMES=["E","A","D","G","B","e"];
 const INLAYS=[3,5,7,9,12,15,17,19];
-const FRETS=20,CW=52,RH=40,PL=44,PT=40,NR=11;
+const FRETS=20,CW=58,RH=56,PL=44,PT=48,NR=13;
 const CVW=PL+FRETS*CW+20, CVH=PT+5*RH+32;
 const SHAPE_ORDER=["C","A","G","E","D"];
 const SHAPE_OFFSET={C:0,A:3,G:5,E:8,D:10};
@@ -476,7 +476,7 @@ function draw(){
       c.fillRect(x0,PT,x1-x0,5*RH);
     });
     c.restore();
-    c.textAlign="center";c.textBaseline="alphabetic";c.font="bold 13px sans-serif";
+    c.textAlign="center";c.textBaseline="alphabetic";c.font="bold 15px sans-serif";
     zones.forEach(z=>{
       if(z.end-z.start<1)return;
       const midX=PL+((z.start+z.end)/2)*CW;
@@ -497,12 +497,12 @@ function draw(){
   INLAYS.forEach(f=>{
     const x=PL+(f-.5)*CW;
     (f===12?[PT+RH*1.4,PT+RH*3.6]:[PT+RH*2.5]).forEach(y=>{
-      c.beginPath();c.arc(x,y,5,0,Math.PI*2);c.fillStyle=T.inlay;c.fill();
+      c.beginPath();c.arc(x,y,6,0,Math.PI*2);c.fillStyle=T.inlay;c.fill();
     });
   });
-  c.textAlign="right";c.textBaseline="middle";c.font="600 11px sans-serif";
+  c.textAlign="right";c.textBaseline="middle";c.font="600 13px sans-serif";
   for(let s=0;s<6;s++){c.fillStyle=T.strLbl;c.fillText(SNAMES[5-s],PL-8,PT+s*RH);}
-  c.textAlign="center";c.textBaseline="top";c.font="10px sans-serif";
+  c.textAlign="center";c.textBaseline="top";c.font="12px sans-serif";
   for(let f=0;f<=FRETS;f++){
     if(f===0||INLAYS.includes(f)){c.fillStyle=T.fretLbl;c.fillText(String(f),PL+(f===0?-6:(f-.5)*CW),PT+5*RH+8);}
   }
@@ -526,7 +526,7 @@ function draw(){
       }
       if(!quizMode){
         const lbl=showNames?ROOTS[pitch]:(showDegrees?deg:"");
-        if(lbl){c.save();c.shadowBlur=0;c.fillStyle=col.text;c.textAlign="center";c.textBaseline="middle";c.font="bold "+(lbl.length>2?"7":"8.5")+"px sans-serif";c.fillText(lbl,cx,y);c.restore();}
+        if(lbl){c.save();c.shadowBlur=0;c.fillStyle=col.text;c.textAlign="center";c.textBaseline="middle";c.font="bold "+(lbl.length>2?"8.5":"10")+"px sans-serif";c.fillText(lbl,cx,y);c.restore();}
       }
       nodes.push({si,f,deg,midi,noteName:ROOTS[pitch],pitch,cx,cy:y});
     }

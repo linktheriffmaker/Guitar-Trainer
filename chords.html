@@ -600,7 +600,7 @@ function render(){
 
     var canvas = document.createElement('canvas');
     canvas.className = 'diagram';
-    canvas.style.width = '100%'; canvas.style.height = '150px';
+    canvas.style.width = '100%'; canvas.style.height = '190px';
     card.appendChild(canvas);
     card.appendChild(el('div','card-note', chd.note));
     card.onclick = function(frets){ return function(){ playChord(frets, freqs); }; }(chd.frets);
@@ -637,7 +637,7 @@ function render(){
     card.appendChild(top);
     var canvas = document.createElement('canvas');
     canvas.className = 'diagram';
-    canvas.style.width = '100%'; canvas.style.height = '150px';
+    canvas.style.width = '100%'; canvas.style.height = '190px';
     card.appendChild(canvas);
     card.appendChild(el('div','card-note', chd.note));
     card.onclick = function(frets){ return function(){ playChord(frets, invFreqs); }; }(chd.frets);
@@ -663,7 +663,7 @@ function render(){
       card.appendChild(top);
       var canvas = document.createElement('canvas');
       canvas.className = 'diagram';
-      canvas.style.width = '100%'; canvas.style.height = '150px';
+      canvas.style.width = '100%'; canvas.style.height = '190px';
       card.appendChild(canvas);
       card.appendChild(el('div','card-note', chd.note));
       card.onclick = function(frets){ return function(){ playChord(frets, CITYPOP.freq); }; }(chd.frets);

@@ -88,7 +88,8 @@ const DIFFICULTY_PRESETS = {
   Advanced: { noteValues:["Quarter","Eighth","Quarter Triplet","Eighth Triplet"], bpm:100, beatsPerBar:4 }
 };
 
-const STAFF_Y = (midi) => 90 - (midi - 60) * 3;
+const STAFF_SCALE = 1.35;
+const STAFF_Y = (midi) => (90 - (midi - 60) * 3) * STAFF_SCALE;
 
 function App(){
   const [keyRoot, setKeyRoot] = React.useState("C");
@@ -252,17 +253,17 @@ function App(){
       </div>
 
       <div style={{overflowX:"auto",overflowY:"hidden",borderRadius:"10px"}}>
-        <svg viewBox="0 0 800 140" style={{width:"100%",minWidth:"600px",background:"white",borderRadius:"10px",display:"block"}}>
+        <svg viewBox={`0 0 800 ${140*STAFF_SCALE}`} style={{width:"100%",minWidth:"600px",background:"white",borderRadius:"10px",display:"block"}}>
         {[50,60,70,80,90].map(y=>
-          <line key={y} x1="0" y1={y} x2="800" y2={y} stroke="black"/>
+          <line key={y} x1="0" y1={y*STAFF_SCALE} x2="800" y2={y*STAFF_SCALE} stroke="black"/>
         )}
-        <text x="10" y="95" fontSize="70">{CLEFS[clef].glyph}</text>
+        <text x="10" y={95*STAFF_SCALE} fontSize={70*STAFF_SCALE}>{CLEFS[clef].glyph}</text>
 
         {KEY_SIGNATURES[keyRoot] && KEY_SIGNATURES[keyRoot].map((acc,i)=>{
           const letter = acc.charAt(0);
-          const y = ACCIDENTAL_Y[clef][letter];
+          const y = ACCIDENTAL_Y[clef][letter] * STAFF_SCALE;
           return (
-            <text key={i} x={58+i*13} y={y} fontSize="20" textAnchor="middle" dominantBaseline="middle" fill="black">
+            <text key={i} x={58+i*13} y={y} fontSize={20*STAFF_SCALE} textAnchor="middle" dominantBaseline="middle" fill="black">
               {acc.includes("#")?"♯":"♭"}
             </text>
           );
@@ -274,10 +275,10 @@ function App(){
               <g key={i} transform={`translate(${120+i*80},0)`}>
                 {!n.rest && n.group.map((m,j)=>(
                   <g key={j} transform={`translate(${j*18},0)`}>
-                    <ellipse cx="0" cy={STAFF_Y(m)} rx="6" ry="4" fill="black"/>
-                    <line x1="6" y1={STAFF_Y(m)} x2="6" y2={STAFF_Y(m)-30} stroke="black"/>
+                    <ellipse cx="0" cy={STAFF_Y(m)} rx={6*STAFF_SCALE} ry={4*STAFF_SCALE} fill="black"/>
+                    <line x1="6" y1={STAFF_Y(m)} x2="6" y2={STAFF_Y(m)-30*STAFF_SCALE} stroke="black"/>
                     {showNames &&
-                      <text x="0" y={STAFF_Y(m)+16} fontSize="9" fontWeight="700" textAnchor="middle" fill="#555">
+                      <text x="0" y={STAFF_Y(m)+16*STAFF_SCALE} fontSize={9*STAFF_SCALE} fontWeight="700" textAnchor="middle" fill="#555">
                         {chromatic[m%12]}
                       </text>
                     }
