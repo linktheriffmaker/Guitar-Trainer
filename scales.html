@@ -319,7 +319,9 @@ function computeBaseScale(){
   return Math.max(1,Math.min(2.5,w/(targetFrets*CW)));
 }
 const baseScale=computeBaseScale();
+const ZOOM_KEY="fretboardZoom";
 let userZoom=1;
+try{ const saved=parseFloat(localStorage.getItem(ZOOM_KEY)); if(!isNaN(saved)) userZoom=Math.max(0.6,Math.min(2,saved)); }catch(e){}
 function resizeCanvas(){
   const dpr=window.devicePixelRatio||1;
   const scale=baseScale*userZoom;
@@ -335,6 +337,7 @@ function setZoom(z){
   userZoom=Math.max(0.6,Math.min(2,z));
   resizeCanvas();draw();
   document.getElementById("zoom-label").textContent=Math.round(userZoom*100)+"%";
+  try{ localStorage.setItem(ZOOM_KEY,userZoom); }catch(e){}
 }
 document.getElementById("zoom-in").onclick=()=>setZoom(userZoom+0.25);
 document.getElementById("zoom-out").onclick=()=>setZoom(userZoom-0.25);
