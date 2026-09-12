@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Style Chords — Lofi, City Pop, Trip Hop & Big Beat</title>
+<title>Style Chords — Lofi, City Pop, Trip Hop, Big Beat & Fingerstyle Folk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,500&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -192,18 +192,37 @@ var BIGBEAT = {
   ]
 };
 
+var LENKER_INVERSIONS = [
+  {name:'C/G', frets:'x32010', note:'The exact move behind Big Thief\u2019s "Change" \u2014 a G held in the bass while a C shape sits on top.'},
+  {name:'D/A', frets:'x00232', note:'Same trick a step up \u2014 the bass climbs by a fourth while the chord barely moves.'},
+  {name:'G/B', frets:'x20003', note:'A common connector between a G-based verse and whatever leans toward Em next.'},
+  {name:'Am/G', frets:'302210', note:'A descending step down from Am \u2014 gentle, stepwise bass motion under a held shape.'}
+];
+
+var LENKER = {
+  freq: [82.41,110.00,146.83,196.00,246.94,329.63],
+  chords: [
+    {name:'G', frets:'320003', note:'The home base \u2014 bright and open, rarely left behind for long.'},
+    {name:'Cadd9', frets:'x32030', note:'The ringing top string that defines a lot of this whole aesthetic.'},
+    {name:'Dsus2', frets:'xx0230', note:'Suspended and unresolved \u2014 lets a fingerpicked pattern breathe.'},
+    {name:'Dsus4', frets:'xx0233', note:'Same idea pulled the other way \u2014 tension leaning up instead of down.'},
+    {name:'Em7', frets:'022030', note:'A minor chord that never quite lands \u2014 it just breathes in place.'},
+    {name:'Fmaj7', frets:'xx3210', note:'Open and warm \u2014 avoids the full F barre entirely.'},
+    {name:'Asus4', frets:'x02230', note:'Suspended a fourth up, only resolving down to A when the line wants it to.'},
+    {name:'Am7', frets:'x02010', note:'Hollow and unforced \u2014 the default resting point in a minor-leaning verse.'}
+  ]
+};
+
 var MODES = {
   lofi: {
     label: 'Lofi Indie',
-    sub: 'mk.gee · Dijon · Yves Tumor · Big Thief · Slowdive',
+    sub: 'mk.gee · Dijon · Yves Tumor · Slowdive',
     intro: "This world runs on chords that don't fully resolve — major sevenths that hang in the air, suspended chords that never quite land. A lot of it also isn't in standard tuning: pick a tuning below to match how these players actually get their sound.",
     songs: [
-      {artist:'mk.gee', title:'You Got It', detail:'Capo 3, standard tuning \u00b7 E \u00b7 C#m7 \u00b7 B \u00b7 Amaj7 \u00b7 G#m7 \u00b7 F#m7 \u00b7 G', tag:'fan-transcribed'},
-      {artist:'Big Thief', title:'Terminal Paradise', detail:'Standard tuning, key of F major \u00b7 Dm \u00b7 Gm \u00b7 C \u00b7 F', tag:'widely documented'},
-      {artist:'Big Thief', title:'Mary', detail:'Standard tuning, key of D major \u00b7 D \u00b7 G \u00b7 A', tag:'widely documented'},
-      {artist:'Slowdive', title:'When the Sun Hits', detail:'Standard tuning, key of F# minor \u00b7 built from F#m \u00b7 D \u00b7 A \u00b7 G (order varies by version)', tag:'widely documented'}
+      {artist:'mk.gee', title:'You Got It', detail:'Capo 3, standard tuning · E · C#m7 · B · Amaj7 · G#m7 · F#m7 · G', tag:'fan-transcribed'},
+      {artist:'Slowdive', title:'When the Sun Hits', detail:'Standard tuning, key of F# minor · built from F#m · D · A · G (order varies by version)', tag:'widely documented'}
     ],
-    songNote: "I couldn't find reliably verified guitar transcriptions for Dijon, Yves Tumor, or Masayoshi Takanaka specifically. Their harmonic vocabulary is reflected in the chord sets above — I didn't want to present unverified song-specific claims as fact.",
+    songNote: "I couldn't find reliably verified guitar transcriptions for Dijon or Yves Tumor specifically. Their harmonic vocabulary is reflected in the chord sets above — I didn't want to present unverified song-specific claims as fact.",
     listening: [
       {artist:'mk.gee', title:'Rylee & I'},
       {artist:'mk.gee', title:'DNM'},
@@ -211,7 +230,6 @@ var MODES = {
       {artist:'Dijon', title:'Rodeo Clown'},
       {artist:'Yves Tumor', title:'Kerosene!'},
       {artist:'Yves Tumor', title:'Gospel for a New Century'},
-      {artist:'Big Thief', title:'Vampire Empire'},
       {artist:'Slowdive', title:'Alison'}
     ]
   },
@@ -267,6 +285,27 @@ var MODES = {
       {artist:'The Chemical Brothers', title:'Block Rockin\u2019 Beats'},
       {artist:'Fatboy Slim', title:'Right Here, Right Now'},
       {artist:'The Crystal Method', title:'Busy Child'}
+    ]
+  },
+  lenker: {
+    label: 'Fingerstyle Folk',
+    sub: 'Adrianne Lenker \u00b7 Big Thief',
+    intro: "Intimate, unhurried fingerpicking built on chords that ring rather than strum \u2014 sus2/sus4/add9 voicings, and slash chords that let the bass walk while the shape above barely moves. For an even more Lenker-specific color, try the High Drop D tuning under Lofi Indie \u2014 it's her own signature move.",
+    songs: [
+      {artist:'Big Thief', title:'Change', detail:'Capo 3, standard tuning \u00b7 G \u00b7 C/G \u00b7 D/A \u00b7 C/G (sounds as Bb \u00b7 Eb/Bb \u00b7 F/C \u00b7 Eb/Bb)', tag:'widely documented'},
+      {artist:'Big Thief', title:'Terminal Paradise', detail:'Standard tuning, key of F major \u00b7 Dm \u00b7 Gm \u00b7 C \u00b7 F', tag:'widely documented'},
+      {artist:'Big Thief', title:'Mary', detail:'Standard tuning, key of D major \u00b7 D \u00b7 G \u00b7 A', tag:'widely documented'}
+    ],
+    songNote: "These three are corroborated across multiple independent chord charts. Beyond them, Lenker's solo work leans heavily on alternate and open tunings that don't always translate to a simple chord name \u2014 the vocabulary above reflects her standard-tuning language rather than claiming more than that.",
+    listening: [
+      {artist:'Big Thief', title:'Paul'},
+      {artist:'Big Thief', title:'Shark Smile'},
+      {artist:'Big Thief', title:'Velvet Ring'},
+      {artist:'Big Thief', title:'Vampire Empire'},
+      {artist:'Big Thief', title:'Simulation Swarm'},
+      {artist:'Adrianne Lenker', title:'Anything'},
+      {artist:'Adrianne Lenker', title:'Ruined'},
+      {artist:'Adrianne Lenker', title:'Not a Lot, Just Forever'}
     ]
   }
 };
@@ -410,7 +449,7 @@ function drawDiagram(canvas, fretStr){
 /* ---------------------------------------------------------
    APP
 --------------------------------------------------------- */
-var state = { mode: 'lofi', tuning: 'standard', capoSong: 0, capoShape: 7, capoEngaged: false, audioReady: false };
+var state = { mode: 'lofi', tuning: 'standard', capoSong: 0, capoShape: 0, capoEngaged: true, audioReady: false };
 var NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function el(tag, cls, html){
@@ -452,13 +491,15 @@ function currentChordSet(){
   if(state.mode === 'lofi') return TUNINGS[state.tuning].chords;
   if(state.mode === 'citypop') return CITYPOP.chords;
   if(state.mode === 'triphop') return TRIPHOP.chords;
-  return BIGBEAT.chords;
+  if(state.mode === 'bigbeat') return BIGBEAT.chords;
+  return LENKER.chords;
 }
 function currentFreqs(){
   if(state.mode === 'lofi') return TUNINGS[state.tuning].freq;
   if(state.mode === 'citypop') return CITYPOP.freq;
   if(state.mode === 'triphop') return TRIPHOP.freq;
-  return BIGBEAT.freq;
+  if(state.mode === 'bigbeat') return BIGBEAT.freq;
+  return LENKER.freq;
 }
 
 function render(){
@@ -477,7 +518,7 @@ function render(){
   }
 
   var nav = el('div','tabbar');
-  ['lofi','citypop','triphop','bigbeat'].forEach(function(key){
+  ['lofi','citypop','triphop','bigbeat','lenker'].forEach(function(key){
     var t = el('button','tab' + (state.mode===key?' active':''), MODES[key].label);
     t.onclick = function(){ state.mode = key; render(); };
     nav.appendChild(t);
@@ -524,7 +565,9 @@ function render(){
     ? "City pop guitar parts are usually played capo-free, since the voicings depend on specific bass-string roots. If a song sits outside your voice, use this instead of changing the shapes."
     : state.mode === 'triphop'
     ? "Trip hop tracks are often built around a fixed sample pitch, not a singable key — a capo is the easiest way to match a vocal without relearning the shapes above."
-    : "Big beat riffs live on power-chord shapes, so a capo just moves the whole riff — useful for matching a vocal range without changing your fretting hand.";
+    : state.mode === 'bigbeat'
+    ? "Big beat riffs live on power-chord shapes, so a capo just moves the whole riff — useful for matching a vocal range without changing your fretting hand."
+    : "This is exactly how \"Change\" actually works — capo 3, playing familiar open shapes that sound a minor third higher. A capo is the whole game in this style, not an afterthought.";
   capoSec.appendChild(el('p','section-note', capoNote));
 
   var row = el('div','capo-row');
@@ -619,13 +662,16 @@ function render(){
     ? "The bass line is half the arrangement in this style. These slash chords keep the same chord above while the root walks — the trick behind every smooth turnaround."
     : state.mode === 'triphop'
     ? "A moving bass line under a static chord is how a lot of these tracks get their sense of drift — the chord above barely changes while the bass walks underneath it."
-    : "Less central here than in the smoother styles, but still useful for the rare moment a riff eases up — a walking bass line between two power chords.";
+    : state.mode === 'bigbeat'
+    ? "Less central here than in the smoother styles, but still useful for the rare moment a riff eases up — a walking bass line between two power chords."
+    : "This is the entire engine behind \"Change\" — a G shape and a D shape, each with a different bass note underneath. Two chords, one trick, a whole song.";
   invSec.appendChild(el('p','section-note', invNote));
   var invGrid = el('div','grid');
   var invChords = state.mode === 'lofi' ? LOFI_INVERSIONS
     : state.mode === 'citypop' ? CITYPOP_INVERSIONS
     : state.mode === 'triphop' ? TRIPHOP_INVERSIONS
-    : BIGBEAT_INVERSIONS;
+    : state.mode === 'bigbeat' ? BIGBEAT_INVERSIONS
+    : LENKER_INVERSIONS;
   var invFreqs = TUNINGS.standard.freq;
   invChords.forEach(function(chd){
     var card = el('div','card');
@@ -758,6 +804,14 @@ document.addEventListener('DOMContentLoaded', function(){
   --bigbeat-text: #eef4f2;
   --bigbeat-muted: #7f9099;
   --bigbeat-line: #2f3d47;
+
+  --lenker-bg: #211c16;
+  --lenker-surface: #2e271e;
+  --lenker-accent: #c9a66b;
+  --lenker-accent2: #7d8c6a;
+  --lenker-text: #f2ead9;
+  --lenker-muted: #a89a80;
+  --lenker-line: #4a4030;
 }
 *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html,body{ margin:0; padding:0; }
@@ -771,6 +825,7 @@ body.mode-lofi{ --bg: var(--lofi-bg); --surface: var(--lofi-surface); --accent: 
 body.mode-citypop{ --bg: var(--city-bg); --surface: var(--city-surface); --accent: var(--city-accent); --accent2: var(--city-accent2); --text: var(--city-text); --muted: var(--city-muted); --diagram-line: var(--city-line); }
 body.mode-triphop{ --bg: var(--triphop-bg); --surface: var(--triphop-surface); --accent: var(--triphop-accent); --accent2: var(--triphop-accent2); --text: var(--triphop-text); --muted: var(--triphop-muted); --diagram-line: var(--triphop-line); }
 body.mode-bigbeat{ --bg: var(--bigbeat-bg); --surface: var(--bigbeat-surface); --accent: var(--bigbeat-accent); --accent2: var(--bigbeat-accent2); --text: var(--bigbeat-text); --muted: var(--bigbeat-muted); --diagram-line: var(--bigbeat-line); }
+body.mode-lenker{ --bg: var(--lenker-bg); --surface: var(--lenker-surface); --accent: var(--lenker-accent); --accent2: var(--lenker-accent2); --text: var(--lenker-text); --muted: var(--lenker-muted); --diagram-line: var(--lenker-line); }
 
 .tabbar{ position: sticky; top:44px; z-index: 10; display:flex; gap:2px; background: var(--bg); padding: 10px 10px 0 10px; }
 .sound-bar{ display:block; width:100%; border:none; background: var(--accent); color: var(--bg); font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:14px; padding:13px; text-align:center; cursor:pointer; }
@@ -782,11 +837,13 @@ body.mode-bigbeat{ --bg: var(--bigbeat-bg); --surface: var(--bigbeat-surface); -
 .mode-lofi .hero{ background: radial-gradient(120% 100% at 20% 0%, var(--lofi-surface) 0%, var(--lofi-bg) 70%); }
 .mode-triphop .hero{ background: radial-gradient(130% 110% at 85% 0%, var(--triphop-surface) 0%, var(--triphop-bg) 72%); }
 .mode-bigbeat .hero{ background: linear-gradient(115deg, var(--bigbeat-bg) 0%, var(--bigbeat-surface) 55%, var(--bigbeat-bg) 100%); }
+.mode-lenker .hero{ background: radial-gradient(110% 90% at 15% 100%, var(--lenker-surface) 0%, var(--lenker-bg) 68%); }
 .hero-fx{ position:absolute; inset:0; pointer-events:none; opacity:0.5; }
 .mode-lofi .hero-fx{ background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 3px); }
 .mode-citypop .hero-fx{ background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.15) 0px, transparent 1px, transparent 22px); mask-image: linear-gradient(180deg, transparent 0%, black 55%, transparent 100%); }
 .mode-triphop .hero-fx{ opacity:0.35; background-image: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 3px); }
 .mode-bigbeat .hero-fx{ opacity:0.6; background-image: repeating-linear-gradient(45deg, rgba(212,255,63,0.07) 0px, rgba(212,255,63,0.07) 2px, transparent 2px, transparent 14px); }
+.mode-lenker .hero-fx{ opacity:0.4; background-image: repeating-linear-gradient(90deg, rgba(201,166,107,0.06) 0px, rgba(201,166,107,0.06) 1px, transparent 1px, transparent 6px); }
 .hero-inner{ position:relative; z-index:1; }
 .eyebrow{ font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color: var(--muted); margin-bottom:6px; }
 .mode-citypop .eyebrow{ color: rgba(22,35,63,0.65); }
