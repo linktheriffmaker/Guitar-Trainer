@@ -449,7 +449,7 @@ function drawDiagram(canvas, fretStr){
 /* ---------------------------------------------------------
    APP
 --------------------------------------------------------- */
-var state = { mode: 'lofi', tuning: 'standard', key: 0, audioReady: false };
+var state = { mode: 'lofi', tuning: 'standard', key: 0, capoOn: true, audioReady: false };
 var NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function el(tag, cls, html){
@@ -458,7 +458,7 @@ function el(tag, cls, html){
   if(html !== undefined) e.innerHTML = html;
   return e;
 }
-function computeCapo(){ return state.key; }
+function computeCapo(){ return state.capoOn ? state.key : 0; }
 var FLATS = {'Db':1,'Eb':3,'Gb':6,'Ab':8,'Bb':10};
 function noteIndex(note){
   var i = NOTES.indexOf(note);
@@ -616,13 +616,28 @@ function render(){
     result.innerHTML = '<span class="capo-big">Capo fret ' + capoFret + '</span><span class="capo-detail">Put a capo on fret ' + capoFret + ' and play these exact shapes to sound in ' + NOTES[state.key] + '.</span>';
   }
   keySec.appendChild(result);
+
+  var toggleRow = el('div','toggle-row');
+  var toggleText = el('div','toggle-text');
+  toggleText.appendChild(el('div','toggle-label','Apply capo to chords below'));
+  toggleText.appendChild(el('div','toggle-sub', state.capoOn
+    ? 'On \u2014 names and playback below reflect the key selected above.'
+    : 'Off \u2014 showing the normal, un-capo\u2019d shapes in their original key.'));
+  toggleRow.appendChild(toggleText);
+  var toggleBtn = el('button','switch' + (state.capoOn ? ' on' : ''));
+  toggleBtn.appendChild(el('span','switch-knob'));
+  toggleBtn.onclick = function(){ state.capoOn = !state.capoOn; render(); };
+  toggleRow.appendChild(toggleBtn);
+  keySec.appendChild(toggleRow);
   app.appendChild(keySec);
 
   var chordSec = el('div','section');
   chordSec.appendChild(el('h2','section-title','Chord Vocabulary'));
   var vocabNote = 'Tap a card to hear it. Learn these as a set, not one at a time.';
-  if(state.key !== 0){
+  if(computeCapo() !== 0){
     vocabNote = 'Shown in the key of ' + NOTES[state.key] + ' (capo ' + state.key + ') — names and playback below reflect the actual sounding pitch.';
+  } else if(state.key !== 0 && !state.capoOn){
+    vocabNote = 'Capo is off — showing the normal shapes in their original key of C, even though ' + NOTES[state.key] + ' is selected above.';
   }
   chordSec.appendChild(el('p','section-note', vocabNote));
 
