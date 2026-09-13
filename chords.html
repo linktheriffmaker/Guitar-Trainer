@@ -347,7 +347,7 @@ function pluckNote(freq, when, gainMul){
   osc.stop(t+1.5);
 }
 function pitchShiftFactor(){
-  return state.capoEngaged ? Math.pow(2, computeCapo()/12) : 1;
+  return Math.pow(2, computeCapo()/12);
 }
 function playChord(fretStr, freqs){
   ensureAudio().then(function(){
@@ -449,7 +449,7 @@ function drawDiagram(canvas, fretStr){
 /* ---------------------------------------------------------
    APP
 --------------------------------------------------------- */
-var state = { mode: 'lofi', tuning: 'standard', capoSong: 0, capoShape: 0, capoEngaged: true, audioReady: false };
+var state = { mode: 'lofi', tuning: 'standard', key: 0, audioReady: false };
 var NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function el(tag, cls, html){
@@ -458,7 +458,7 @@ function el(tag, cls, html){
   if(html !== undefined) e.innerHTML = html;
   return e;
 }
-function computeCapo(){ return (state.capoSong - state.capoShape + 12) % 12; }
+function computeCapo(){ return state.key; }
 var FLATS = {'Db':1,'Eb':3,'Gb':6,'Ab':8,'Bb':10};
 function noteIndex(note){
   var i = NOTES.indexOf(note);
@@ -480,11 +480,33 @@ function transposeChordName(name, semis){
   if(slash) return newRoot + slash[1] + '/' + transposeNote(slash[2], semis);
   return newRoot + rest;
 }
+
+var DEGREE_NUM = {0:'I',1:'bII',2:'II',3:'bIII',4:'III',5:'IV',6:'bV',7:'V',8:'bVI',9:'VI',10:'bVII',11:'VII'};
+function chordQualityFromSuffix(rest){
+  if(/^dim7|^°/.test(rest)) return 'dim';
+  if(/^m7b5/.test(rest)) return 'halfdim';
+  if(/^m(?!aj)/.test(rest)) return 'minor';
+  if(/^aug|\+/.test(rest)) return 'aug';
+  return 'major';
+}
+function romanNumeral(name){
+  var sym = name.replace(/\s*\([^)]*\)\s*/g,'');
+  if(sym.indexOf('/') !== -1) sym = sym.split('/')[0];
+  var m = sym.match(/^([A-G])(#|b)?([\s\S]*)$/);
+  if(!m) return '';
+  var root = noteIndex(m[1] + (m[2]||''));
+  var quality = chordQualityFromSuffix(m[3]||'');
+  var base = DEGREE_NUM[root];
+  if(quality==='minor') return base.toLowerCase();
+  if(quality==='dim') return base.toLowerCase()+'°';
+  if(quality==='halfdim') return base.toLowerCase()+'ø';
+  if(quality==='aug') return base+'+';
+  return base;
+}
 function displayChordName(chd){
-  if(!state.capoEngaged) return chd.name;
   var shift = computeCapo();
   if(shift === 0) return chd.name;
-  return chd.name + ' \u2192 ' + transposeChordName(chd.name, shift);
+  return transposeChordName(chd.name, shift);
 }
 
 function currentChordSet(){
@@ -554,78 +576,53 @@ function render(){
     app.appendChild(tuneSec);
   }
 
-  var capoSec = el('div','section');
-  var ch = el('div','section-title-row');
-  ch.appendChild(svgCapo());
-  ch.appendChild(el('h2','section-title','Capo Calculator'));
-  capoSec.appendChild(ch);
+  var keySec = el('div','section');
+  var kh = el('div','section-title-row');
+  kh.appendChild(svgCapo());
+  kh.appendChild(el('h2','section-title','Key'));
+  keySec.appendChild(kh);
   var capoNote = state.mode === 'lofi'
-    ? "These artists often write in keys that sit awkwardly open — a capo keeps your hand shapes familiar while the guitar sounds brighter and higher."
+    ? "This vocabulary is written for the key of C. Pick a different key and every chord name and sound below transposes to match — the shapes are the same, just capo'd."
     : state.mode === 'citypop'
-    ? "City pop guitar parts are usually played capo-free, since the voicings depend on specific bass-string roots. If a song sits outside your voice, use this instead of changing the shapes."
+    ? "This vocabulary is written for the key of C. Pick a different key and every chord name and sound below transposes to match — city pop parts are usually played capo-free, so treat the suggested fret as a reference rather than a rule."
     : state.mode === 'triphop'
-    ? "Trip hop tracks are often built around a fixed sample pitch, not a singable key — a capo is the easiest way to match a vocal without relearning the shapes above."
+    ? "This vocabulary is written for the key of C. Pick a different key and every chord name and sound below transposes to match — handy since these tracks are often built around a fixed sample pitch rather than a singable key."
     : state.mode === 'bigbeat'
-    ? "Big beat riffs live on power-chord shapes, so a capo just moves the whole riff — useful for matching a vocal range without changing your fretting hand."
-    : "This is exactly how \"Change\" actually works — capo 3, playing familiar open shapes that sound a minor third higher. A capo is the whole game in this style, not an afterthought.";
-  capoSec.appendChild(el('p','section-note', capoNote));
+    ? "This vocabulary is written for the key of C. Pick a different key and every chord name and sound below transposes to match — a capo just moves the whole riff without changing your fretting hand."
+    : "This vocabulary is written for the key of C. Pick a different key and every chord name and sound below transposes to match — this is exactly how \"Change\" works, capo 3 with familiar open shapes.";
+  keySec.appendChild(el('p','section-note', capoNote));
 
-  var row = el('div','capo-row');
-  var songWrap = el('div','field');
-  songWrap.appendChild(el('label','field-label','Song is in the key of'));
-  var songSel = el('select','field-select');
+  var keyRow = el('div','capo-row');
+  var keyWrap = el('div','field');
+  keyWrap.appendChild(el('label','field-label','Play in the key of'));
+  var keySel = el('select','field-select');
   NOTES.forEach(function(n,i){
     var o = el('option', null, n); o.value = i;
-    if(i===state.capoSong) o.selected = true;
-    songSel.appendChild(o);
+    if(i===state.key) o.selected = true;
+    keySel.appendChild(o);
   });
-  songSel.onchange = function(){ state.capoSong = parseInt(this.value,10); render(); };
-  songWrap.appendChild(songSel);
+  keySel.onchange = function(){ state.key = parseInt(this.value,10); render(); };
+  keyWrap.appendChild(keySel);
+  keyRow.appendChild(keyWrap);
+  keySec.appendChild(keyRow);
 
-  var shapeWrap = el('div','field');
-  shapeWrap.appendChild(el('label','field-label','I want to play shapes in'));
-  var shapeSel = el('select','field-select');
-  NOTES.forEach(function(n,i){
-    var o = el('option', null, n); o.value = i;
-    if(i===state.capoShape) o.selected = true;
-    shapeSel.appendChild(o);
-  });
-  shapeSel.onchange = function(){ state.capoShape = parseInt(this.value,10); render(); };
-  shapeWrap.appendChild(shapeSel);
-
-  row.appendChild(songWrap); row.appendChild(shapeWrap);
-  capoSec.appendChild(row);
-
-  var capoFret = computeCapo();
+  var capoFret = state.key;
   var result = el('div','capo-result');
   if(capoFret === 0){
-    result.innerHTML = '<span class="capo-big">No capo needed</span><span class="capo-detail">Your shape key already matches the song key.</span>';
+    result.innerHTML = '<span class="capo-big">No capo needed</span><span class="capo-detail">These shapes already sound in C — their natural key.</span>';
   } else if (capoFret > 9){
-    result.innerHTML = '<span class="capo-big">Capo fret ' + capoFret + '</span><span class="capo-detail">That\'s high up the neck — try a different shape key, or tune down instead.</span>';
+    result.innerHTML = '<span class="capo-big">Capo fret ' + capoFret + '</span><span class="capo-detail">That\'s high up the neck — consider a lower octave voicing instead.</span>';
   } else {
-    result.innerHTML = '<span class="capo-big">Capo fret ' + capoFret + '</span><span class="capo-detail">Play ' + NOTES[state.capoShape] + '-shaped chords with the capo on fret ' + capoFret + ' to sound in ' + NOTES[state.capoSong] + '.</span>';
+    result.innerHTML = '<span class="capo-big">Capo fret ' + capoFret + '</span><span class="capo-detail">Put a capo on fret ' + capoFret + ' and play these exact shapes to sound in ' + NOTES[state.key] + '.</span>';
   }
-  capoSec.appendChild(result);
-
-  var toggleRow = el('div','toggle-row');
-  var toggleText = el('div','toggle-text');
-  toggleText.appendChild(el('div','toggle-label','Apply this capo to the chords below'));
-  toggleText.appendChild(el('div','toggle-sub', state.capoEngaged
-    ? 'Chord cards now show the sounding pitch and play at the capo\u2019d pitch.'
-    : 'Off by default — chords below show and sound as if played with no capo.'));
-  toggleRow.appendChild(toggleText);
-  var toggleBtn = el('button','switch' + (state.capoEngaged ? ' on' : ''));
-  toggleBtn.appendChild(el('span','switch-knob'));
-  toggleBtn.onclick = function(){ state.capoEngaged = !state.capoEngaged; render(); };
-  toggleRow.appendChild(toggleBtn);
-  capoSec.appendChild(toggleRow);
-  app.appendChild(capoSec);
+  keySec.appendChild(result);
+  app.appendChild(keySec);
 
   var chordSec = el('div','section');
   chordSec.appendChild(el('h2','section-title','Chord Vocabulary'));
   var vocabNote = 'Tap a card to hear it. Learn these as a set, not one at a time.';
-  if(state.capoEngaged && computeCapo() !== 0){
-    vocabNote = 'Capo engaged on fret ' + computeCapo() + ' — names and playback below show the actual sounding pitch, not the shape you finger.';
+  if(state.key !== 0){
+    vocabNote = 'Shown in the key of ' + NOTES[state.key] + ' (capo ' + state.key + ') — names and playback below reflect the actual sounding pitch.';
   }
   chordSec.appendChild(el('p','section-note', vocabNote));
 
@@ -635,7 +632,11 @@ function render(){
   chords.forEach(function(chd){
     var card = el('div','card');
     var top = el('div','card-top');
-    top.appendChild(el('div','card-name', displayChordName(chd)));
+    var nameWrap = el('div','card-name-wrap');
+    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
+    var rn = romanNumeral(chd.name);
+    if(rn) nameWrap.appendChild(el('div','card-roman', rn));
+    top.appendChild(nameWrap);
     var playBtn = el('button','play-btn','\u25b6');
     playBtn.onclick = function(e){ e.stopPropagation(); playChord(chd.frets, freqs); };
     top.appendChild(playBtn);
@@ -676,7 +677,11 @@ function render(){
   invChords.forEach(function(chd){
     var card = el('div','card');
     var top = el('div','card-top');
-    top.appendChild(el('div','card-name', displayChordName(chd)));
+    var nameWrap = el('div','card-name-wrap');
+    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
+    var rn = romanNumeral(chd.name);
+    if(rn) nameWrap.appendChild(el('div','card-roman', rn));
+    top.appendChild(nameWrap);
     var playBtn = el('button','play-btn','\u25b6');
     playBtn.onclick = function(e){ e.stopPropagation(); playChord(chd.frets, invFreqs); };
     top.appendChild(playBtn);
@@ -702,7 +707,11 @@ function render(){
     JAZZ_FUSION.forEach(function(chd){
       var card = el('div','card');
       var top = el('div','card-top');
-      top.appendChild(el('div','card-name', displayChordName(chd)));
+      var nameWrap = el('div','card-name-wrap');
+    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
+    var rn = romanNumeral(chd.name);
+    if(rn) nameWrap.appendChild(el('div','card-roman', rn));
+    top.appendChild(nameWrap);
       var playBtn = el('button','play-btn','\u25b6');
       playBtn.onclick = function(e){ e.stopPropagation(); playChord(chd.frets, CITYPOP.freq); };
       top.appendChild(playBtn);
@@ -891,6 +900,9 @@ body.mode-lenker{ --bg: var(--lenker-bg); --surface: var(--lenker-surface); --ac
 .card:active{ transform: scale(0.97); }
 .card-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
 .card-name{ font-family:'Fraunces', serif; font-weight:600; font-size:15.5px; line-height:1.25; word-break:break-word; padding-right:6px; }
+.card-name-wrap{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; padding-right:6px; }
+.card-name-wrap .card-name{ padding-right:0; }
+.card-roman{ font-family:'Space Mono', monospace; font-size:11px; font-weight:700; color: var(--accent); border:1px solid var(--accent); border-radius:20px; padding:1px 7px; line-height:1.5; flex-shrink:0; }
 .play-btn{ width: 30px; height:30px; border-radius:50%; border:none; background: var(--accent); color: var(--bg); font-size: 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .card-note{ font-size: 11.5px; line-height:1.4; color: var(--muted); margin-top:6px; min-height: 44px; }
 
