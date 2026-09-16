@@ -449,7 +449,7 @@ function drawDiagram(canvas, fretStr){
 /* ---------------------------------------------------------
    APP
 --------------------------------------------------------- */
-var state = { mode: 'lofi', tuning: 'standard', key: 0, capoOn: true, audioReady: false };
+var state = { mode: 'lofi', tuning: 'standard', key: 0, keyMode: 'major', capoOn: true, audioReady: false };
 var NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function el(tag, cls, html){
@@ -481,7 +481,8 @@ function transposeChordName(name, semis){
   return newRoot + rest;
 }
 
-var DEGREE_NUM = {0:'I',1:'bII',2:'II',3:'bIII',4:'III',5:'IV',6:'bV',7:'V',8:'bVI',9:'VI',10:'bVII',11:'VII'};
+var MAJOR_DEGREE_NUM = {0:'I',1:'bII',2:'II',3:'bIII',4:'III',5:'IV',6:'bV',7:'V',8:'bVI',9:'VI',10:'bVII',11:'VII'};
+var MINOR_DEGREE_NUM = {0:'I',1:'bII',2:'II',3:'III',4:'#III',5:'IV',6:'bV',7:'V',8:'VI',9:'#VI',10:'VII',11:'#VII'};
 function chordQualityFromSuffix(rest){
   if(/^dim7|^°/.test(rest)) return 'dim';
   if(/^m7b5/.test(rest)) return 'halfdim';
@@ -495,8 +496,10 @@ function romanNumeral(name){
   var m = sym.match(/^([A-G])(#|b)?([\s\S]*)$/);
   if(!m) return '';
   var root = noteIndex(m[1] + (m[2]||''));
+  var deg = ((root - state.key) % 12 + 12) % 12;
   var quality = chordQualityFromSuffix(m[3]||'');
-  var base = DEGREE_NUM[root];
+  var table = state.keyMode === 'minor' ? MINOR_DEGREE_NUM : MAJOR_DEGREE_NUM;
+  var base = table[deg];
   if(quality==='minor') return base.toLowerCase();
   if(quality==='dim') return base.toLowerCase()+'°';
   if(quality==='halfdim') return base.toLowerCase()+'ø';
@@ -621,23 +624,34 @@ function render(){
   var toggleText = el('div','toggle-text');
   toggleText.appendChild(el('div','toggle-label','Apply capo to chords below'));
   toggleText.appendChild(el('div','toggle-sub', state.capoOn
-    ? 'On \u2014 names and playback below reflect the key selected above.'
-    : 'Off \u2014 showing the normal, un-capo\u2019d shapes in their original key.'));
+    ? 'On \u2014 explore how these open shapes sound capo\u2019d into ' + NOTES[state.key] + '.'
+    : 'Off \u2014 showing your familiar open shapes as-is, no capo applied.'));
   toggleRow.appendChild(toggleText);
   var toggleBtn = el('button','switch' + (state.capoOn ? ' on' : ''));
   toggleBtn.appendChild(el('span','switch-knob'));
   toggleBtn.onclick = function(){ state.capoOn = !state.capoOn; render(); };
   toggleRow.appendChild(toggleBtn);
   keySec.appendChild(toggleRow);
+
+  var modeRow = el('div','field');
+  modeRow.appendChild(el('label','field-label','Treat key as'));
+  var modeSeg = el('div','mode-seg');
+  ['major','minor'].forEach(function(m){
+    var b = el('button','mode-btn' + (state.keyMode===m ? ' active' : ''), m.charAt(0).toUpperCase()+m.slice(1));
+    b.onclick = function(){ state.keyMode = m; render(); };
+    modeSeg.appendChild(b);
+  });
+  modeRow.appendChild(modeSeg);
+  keySec.appendChild(modeRow);
   app.appendChild(keySec);
 
   var chordSec = el('div','section');
   chordSec.appendChild(el('h2','section-title','Chord Vocabulary'));
   var vocabNote = 'Tap a card to hear it. Learn these as a set, not one at a time.';
-  if(computeCapo() !== 0){
-    vocabNote = 'Shown in the key of ' + NOTES[state.key] + ' (capo ' + state.key + ') — names and playback below reflect the actual sounding pitch.';
+  if(state.key !== 0 && state.capoOn){
+    vocabNote = 'Shown capo\u2019d into ' + NOTES[state.key] + ' ' + state.keyMode + ' (capo ' + state.key + ') — names and playback below reflect the actual sounding pitch.';
   } else if(state.key !== 0 && !state.capoOn){
-    vocabNote = 'Capo is off — showing the normal shapes in their original key of C, even though ' + NOTES[state.key] + ' is selected above.';
+    vocabNote = 'Capo is off — these are your familiar open shapes, unaffected by the ' + NOTES[state.key] + ' key selected above.';
   }
   chordSec.appendChild(el('p','section-note', vocabNote));
 
@@ -648,8 +662,9 @@ function render(){
     var card = el('div','card');
     var top = el('div','card-top');
     var nameWrap = el('div','card-name-wrap');
-    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
-    var rn = romanNumeral(chd.name);
+    var dispName = displayChordName(chd);
+    nameWrap.appendChild(el('div','card-name', dispName));
+    var rn = romanNumeral(dispName);
     if(rn) nameWrap.appendChild(el('div','card-roman', rn));
     top.appendChild(nameWrap);
     var playBtn = el('button','play-btn','\u25b6');
@@ -693,8 +708,9 @@ function render(){
     var card = el('div','card');
     var top = el('div','card-top');
     var nameWrap = el('div','card-name-wrap');
-    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
-    var rn = romanNumeral(chd.name);
+    var dispName = displayChordName(chd);
+    nameWrap.appendChild(el('div','card-name', dispName));
+    var rn = romanNumeral(dispName);
     if(rn) nameWrap.appendChild(el('div','card-roman', rn));
     top.appendChild(nameWrap);
     var playBtn = el('button','play-btn','\u25b6');
@@ -723,8 +739,9 @@ function render(){
       var card = el('div','card');
       var top = el('div','card-top');
       var nameWrap = el('div','card-name-wrap');
-    nameWrap.appendChild(el('div','card-name', displayChordName(chd)));
-    var rn = romanNumeral(chd.name);
+    var dispName = displayChordName(chd);
+    nameWrap.appendChild(el('div','card-name', dispName));
+    var rn = romanNumeral(dispName);
     if(rn) nameWrap.appendChild(el('div','card-roman', rn));
     top.appendChild(nameWrap);
       var playBtn = el('button','play-btn','\u25b6');
@@ -897,6 +914,9 @@ body.mode-lenker{ --bg: var(--lenker-bg); --surface: var(--lenker-surface); --ac
 .field{ flex:1; display:flex; flex-direction:column; gap:6px; }
 .field-label{ font-family:'Space Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color: var(--muted); }
 .field-select{ appearance:none; -webkit-appearance:none; background: var(--surface); color: var(--text); border: 1px solid var(--diagram-line); border-radius: 10px; padding: 12px 10px; font-family:'Space Grotesk', sans-serif; font-weight:600; font-size: 15px; }
+.mode-seg{ display:flex; gap:6px; margin-top:6px; }
+.mode-btn{ flex:1; padding:10px; border-radius:10px; border:1px solid var(--diagram-line); background: var(--surface); color: var(--muted); font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14px; cursor:pointer; }
+.mode-btn.active{ background: var(--surface); color: var(--text); border-color: var(--accent); box-shadow: inset 0 2px 0 var(--accent); }
 .capo-result{ background: var(--surface); border-radius: 14px; padding: 16px 16px; display:flex; flex-direction:column; gap:4px; border: 1px solid var(--diagram-line); }
 .capo-big{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; color: var(--accent); }
 .capo-detail{ font-size: 13px; color: var(--muted); line-height:1.4; }
